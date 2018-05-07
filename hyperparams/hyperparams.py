@@ -16,15 +16,10 @@ class Hyperparams(object):
         self._workspace = 512
         self._loss_type = "warpctc" # ["warpctc"  "ctc"]
 
-        self._batch_size = 1024
+        self._batch_size = 256
         self._num_classes = 5990 # 0 as blank, 1~xxxx as labels
         self._img_width = 280
         self._img_height = 32
-
-        # DenseNet hyper parameters
-        self._depth = 161
-        self._growrate = 32
-        self._reduction = 0.5
 
         # LSTM hyper parameters
         self._num_hidden = 100
