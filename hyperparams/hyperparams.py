@@ -16,8 +16,8 @@ class Hyperparams(object):
         self._workspace = 512
         self._loss_type = "warpctc" # ["warpctc"  "ctc"]
 
-        self._batch_size = 128
-        self._num_classes = 5990
+        self._batch_size = 1024
+        self._num_classes = 5990 # 0 as blank, 1~xxxx as labels
         self._img_width = 280
         self._img_height = 32
 

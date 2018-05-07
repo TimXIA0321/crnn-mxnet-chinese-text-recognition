@@ -6,7 +6,7 @@ import os
 import mxnet as mx
 
 from hyperparams.hyperparams import Hyperparams
-from data_utils.data_iter import ImageIter,ImageIterLstm
+from data_utils.data_iter import ImageIter,ImageIterLstm,ImageRecIterLstm
 from symbols.crnn import crnn_no_lstm, crnn_lstm
 from fit.ctc_metrics import CtcMetrics
 from fit.fit import fit
@@ -14,13 +14,6 @@ from fit.fit import fit
 def parse_args():
     # Parse command line arguments
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("--data_root", help="Path to image files", type=str,
-                        default='/home/richard/data/Synthetic_Chinese_String_Dataset/images')
-    parser.add_argument("--train_file", help="Path to train txt file", type=str,
-                        default='/home/richard/data/Synthetic_Chinese_String_Dataset/train.txt')
-    parser.add_argument("--test_file", help="Path to test txt file", type=str,
-                        default='/home/richard/data/Synthetic_Chinese_String_Dataset/test.txt')
     parser.add_argument("--cpu",
                         help="Number of CPUs for training [Default 8]. Ignored if --gpu is specified.",
                         type=int, default=4)
@@ -39,10 +32,8 @@ def main():
     init_states = init_c + init_h
     data_names = ['data'] + [x[0] for x in init_states]
 
-    data_train = ImageIterLstm(
-        args.data_root, args.train_file, hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="train")
-    data_val = ImageIterLstm(
-        args.data_root, args.test_file,  hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="val")
+    data_train = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/ocr_rec/train', hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="train")
+    data_val = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/ocr_rec/val',  hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="val")
 
     head = '%(asctime)-15s %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=head)

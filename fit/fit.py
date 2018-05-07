@@ -19,9 +19,9 @@ def _load_model(args, rank=0):
 
 def fit(network, data_train, data_val, metrics, args, hp, data_names=None):
     if args.gpu:
-        contexts = [mx.context.gpu(i) for i in range(args.gpu)]
+        contexts = [mx.gpu(i) for i in range(args.gpu)]
     else:
-        contexts = [mx.context.cpu(i) for i in range(args.cpu)]
+        contexts = [mx.cpu(i) for i in range(args.cpu)]
 
     sym, arg_params, aux_params = _load_model(args)
     if sym is not None:
@@ -33,9 +33,13 @@ def fit(network, data_train, data_val, metrics, args, hp, data_names=None):
             label_names=['label'],
             context=contexts)
 
+    begin_epoch = args.load_epoch if args.load_epoch else 0
+    if args.load_epoch:
+        module._preload_opt_states = '%s-%04d.states'%(args.prefix, begin_epoch)
+
     module.fit(train_data=data_train,
                eval_data=data_val,
-               begin_epoch=args.load_epoch if args.load_epoch else 0,
+               begin_epoch=begin_epoch,
                num_epoch=hp.num_epoch,
                # use metrics.accuracy or metrics.accuracy_lcs
                eval_metric=mx.metric.np(metrics.accuracy, allow_extra_outputs=True),
@@ -48,5 +52,5 @@ def fit(network, data_train, data_val, metrics, args, hp, data_names=None):
                arg_params=arg_params,
                aux_params=aux_params,
                batch_end_callback=mx.callback.Speedometer(hp.batch_size, 50),
-               epoch_end_callback=mx.callback.do_checkpoint(args.prefix),
+               epoch_end_callback=mx.callback.module_checkpoint(module, args.prefix, period=1, save_optimizer_states=True),
                )
