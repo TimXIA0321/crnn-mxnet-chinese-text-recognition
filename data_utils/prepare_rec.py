@@ -26,8 +26,9 @@ def make_rec(fn, prefix):
         ret = np.zeros(num_label, np.int32)
         for idx in range(1, len(img_lst)):
             ret[idx - 1] = int(img_lst[idx])
-                
-        p = mx.recordio.pack_img((0,ret,i,0), img)        
+
+        # TODO: change to png
+        p = mx.recordio.pack_img((0,ret,i,0), img, quality=0, img_fmt='.png')        
         record.write_idx(i,p)
         i += 1
 

@@ -86,6 +86,9 @@ class ImageRecIterLstm(mx.io.DataIter):
             self.cursor = -self.batch_size + (self.cursor%self.num_data)%self.batch_size
         else:
             self.cursor = -self.batch_size
+        self.idx = list(range(0, self.num_data))
+        if self.shuffle:
+            random.shuffle(self.idx)
 
     def iter_next(self):
         self.cursor += self.batch_size
@@ -111,8 +114,10 @@ class ImageRecIterLstm(mx.io.DataIter):
                 init_state_names = [x[0] for x in self.init_states]
             data = []
             label = []
+            
+            sl = [self.idx[_] for _ in l]
 
-            for il in l:
+            for il in sl:
                 pack = self.record.read_idx(il)        
                 header, img = mx.recordio.unpack_img(pack)
                 img = np.expand_dims(img, axis=0)

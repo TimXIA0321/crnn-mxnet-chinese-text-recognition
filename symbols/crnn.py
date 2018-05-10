@@ -102,10 +102,10 @@ def crnn_lstm(hp):
         return mx.sym.softmax(data=pred, name='softmax')
 
 
-from hyperparams.hyperparams import Hyperparams
+from hyperparams.hyperparams import hp
 
 if __name__ == '__main__':
-    hp = Hyperparams()
+    #hp = Hyperparams()
 
     init_states = {}
     init_states['data'] = (hp.batch_size, 1, hp.img_height, hp.img_width)

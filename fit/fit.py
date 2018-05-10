@@ -17,7 +17,7 @@ def _load_model(args, rank=0):
     return (sym, arg_params, aux_params)
 
 
-def fit(network, data_train, data_val, metrics, args, hp, data_names=None):
+def fit(network, data_train, data_val, metrics, args, hp, data_names=None, logger=logging):
     if args.gpu:
         contexts = [mx.gpu(i) for i in range(args.gpu)]
     else:
@@ -31,6 +31,7 @@ def fit(network, data_train, data_val, metrics, args, hp, data_names=None):
             symbol = network,
             data_names= ["data"] if data_names is None else data_names,
             label_names=['label'],
+            logger=logger,
             context=contexts)
 
     begin_epoch = args.load_epoch if args.load_epoch else 0
@@ -43,9 +44,9 @@ def fit(network, data_train, data_val, metrics, args, hp, data_names=None):
                num_epoch=hp.num_epoch,
                # use metrics.accuracy or metrics.accuracy_lcs
                eval_metric=mx.metric.np(metrics.accuracy, allow_extra_outputs=True),
-               optimizer='AdaDelta',
+               optimizer='sgd',
                optimizer_params={'learning_rate': hp.learning_rate,
-                                 # 'momentum': hp.momentum,
+                                 'momentum': hp.momentum,
                                  'wd': 0.00001,
                                  },
                initializer=mx.init.Xavier(factor_type="in", magnitude=2.34),

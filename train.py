@@ -5,7 +5,7 @@ import logging
 import os
 import mxnet as mx
 
-from hyperparams.hyperparams import Hyperparams
+from hyperparams.hyperparams import hp
 from data_utils.data_iter import ImageRecIterLstm
 from symbols.crnn import crnn_no_lstm, crnn_lstm
 from fit.ctc_metrics import CtcMetrics
@@ -26,7 +26,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    hp = Hyperparams()
 
     if args.no_lstm:
         init_states = None
@@ -37,11 +36,16 @@ def main():
         init_states = init_c + init_h
         data_names = ['data'] + [x[0] for x in init_states]
 
-    data_train = ImageRecIterLstm('/media/kk/DATA/imdb/ocr/ocr_rec/train', hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="train")
-    data_val = ImageRecIterLstm('/media/kk/DATA/imdb/ocr/ocr_rec/val',  hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="val")
+    data_train = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/ocr_rec/train', hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="train")
+    data_val = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/ocr_rec/val',  hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="val")
 
     head = '%(asctime)-15s %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=head)
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    fh = logging.FileHandler('train.log')
+    logger.addHandler(fh)
+
 
     if args.no_lstm:
         network = crnn_no_lstm(hp)
@@ -50,7 +54,8 @@ def main():
 
     metrics = CtcMetrics(hp.seq_length)
 
-    fit(network=network, data_train=data_train, data_val=data_val, metrics=metrics, args=args, hp=hp, data_names=data_names)
+    fit(network=network, data_train=data_train, data_val=data_val, metrics=metrics
+        , args=args, hp=hp, data_names=data_names, logger=logger)
 
 if __name__ == '__main__':
     main()
