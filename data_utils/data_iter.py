@@ -42,8 +42,8 @@ class SimpleBatch(object):
         return [(n, x.shape) for n, x in zip(self._label_names, self._label)]
 
 class ImageRecIterLstm(mx.io.DataIter):
-
-    def __init__(self, prefix, batch_size, data_shape, num_label, lstm_init_states, shuffle=False, name=None
+    # TODO: shuffle may cause 10x slower now
+    def __init__(self, prefix, batch_size, data_shape, num_label, lstm_init_states, shuffle=False
         , last_batch_handle='pad'):
 
         super(ImageRecIterLstm, self).__init__()
@@ -61,7 +61,6 @@ class ImageRecIterLstm(mx.io.DataIter):
         if self.init_states is not None:
             self.provide_data += lstm_init_states
         self.provide_label = [('label', (self.batch_size, self.num_label))]
-        self.name = name
 
         with open(prefix+'.idx') as f:
             self.num_data = len(f.readlines())
@@ -125,7 +124,7 @@ class ImageRecIterLstm(mx.io.DataIter):
 
                 data.append(img)
                 label.append(ret)
-            data_all = [mx.nd.array(data)]
+            data_all = [mx.nd.array(data) - 151] # 151 as mean
             if self.init_states is not None:
                 data_all += self.init_state_arrays
             label_all = [mx.nd.array(label)]

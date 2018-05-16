@@ -6,7 +6,7 @@ import numpy as np
 import mxnet as mx
 import cv2
 
-prefix = '/mnt/15F1B72E1A7798FD/DK2/ocr_rec/val'
+prefix = '/mnt/15F1B72E1A7798FD/DK2/train'
 record = mx.recordio.MXIndexedRecordIO(prefix+'.idx', prefix+'.rec', 'r')
 
 with open(prefix+'.idx') as f:

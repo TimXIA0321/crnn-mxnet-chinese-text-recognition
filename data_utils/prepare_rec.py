@@ -27,12 +27,11 @@ def make_rec(fn, prefix):
         for idx in range(1, len(img_lst)):
             ret[idx - 1] = int(img_lst[idx])
 
-        # TODO: change to png
-        p = mx.recordio.pack_img((0,ret,i,0), img, quality=0, img_fmt='.png')        
+        p = mx.recordio.pack_img((0,ret,i,0), img, quality=3, img_fmt='.png')        
         record.write_idx(i,p)
         i += 1
 
     record.close()   
 
-make_rec(train_fn, 'train')
-make_rec(val_fn, 'val')
+make_rec(val_fn, '/mnt/15F1B72E1A7798FD/DK2/val')
+make_rec(train_fn, '/mnt/15F1B72E1A7798FD/DK2/train')

@@ -36,8 +36,10 @@ def main():
         init_states = init_c + init_h
         data_names = ['data'] + [x[0] for x in init_states]
 
-    data_train = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/ocr_rec/train', hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="train")
-    data_val = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/ocr_rec/val',  hp.batch_size, (hp.img_width, hp.img_height), hp.num_label, init_states, name="val")
+    data_train = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/train', hp.batch_size, (hp.img_width, hp.img_height)
+    , hp.num_label, init_states, shuffle=False)
+    data_val = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/val',  hp.batch_size, (hp.img_width, hp.img_height)
+    , hp.num_label, init_states, shuffle=False)
 
     head = '%(asctime)-15s %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=head)
