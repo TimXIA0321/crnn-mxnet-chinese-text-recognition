@@ -5,13 +5,9 @@ from dotdict import DotDict
 hp = DotDict()
 
 # Training hyper parameters
-hp.train_epoch_size = 30000
-hp.eval_epoch_size = 3000
 hp.num_epoch = 20
-hp.learning_rate = 0.04
+hp.learning_rate = 0.02
 hp.momentum = 0.9
-hp.bn_mom = 0.9
-hp.workspace = 512
 hp.loss_type = "warpctc" # ["warpctc"  "ctc"]
 
 hp.batch_size = 1024

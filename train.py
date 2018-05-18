@@ -36,10 +36,17 @@ def main():
         init_states = init_c + init_h
         data_names = ['data'] + [x[0] for x in init_states]
 
+    init_states = None
+    data_names = ['data']
+        
+
     data_train = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/train', hp.batch_size, (hp.img_width, hp.img_height)
     , hp.num_label, init_states, shuffle=False)
     data_val = ImageRecIterLstm('/mnt/15F1B72E1A7798FD/DK2/val',  hp.batch_size, (hp.img_width, hp.img_height)
     , hp.num_label, init_states, shuffle=False)
+
+    data_train = mx.io.PrefetchingIter(data_train)
+    data_val = mx.io.PrefetchingIter(data_val)
 
     head = '%(asctime)-15s %(message)s'
     logging.basicConfig(level=logging.DEBUG, format=head)

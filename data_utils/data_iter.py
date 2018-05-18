@@ -126,11 +126,11 @@ class ImageRecIterLstm(mx.io.DataIter):
                 label.append(ret)
             data_all = [mx.nd.array(data) - 151] # 151 as mean
             if self.init_states is not None:
-                data_all += self.init_state_arrays
+               data_all += self.init_state_arrays
             label_all = [mx.nd.array(label)]
             data_names = ['data']
             if self.init_states is not None:
-                data_names += init_state_names
+               data_names += init_state_names
             label_names = ['label']
             return SimpleBatch(data_names, data_all, label_names, label_all)
         else:
